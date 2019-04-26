@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Welcome to gogi</title>
+    <meta name="description"
+        content="A responsive web app template with common components like profile, list, tabs, menu views. Made for Codrops exclusively.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/assets/css/output.css">
+    <!-- <link rel="stylesheet" href="tippy.js/dist/themes/light.css"> -->
+
+    <style>
+        .desa-2 {
+
+            stroke: rgb(73, 73, 73);
+            stroke-linejoin: round;
+            stroke-width:0.20;
+        }
+        #tooltip-container {
+            position: absolute;
+            /* background-color: rgb(247, 248, 255); */
+            color: rgb(255, 255, 255);
+            /* box-shadow: 0px 3px 4px -1px lightgray; */
+            padding: 8px;
+            display: none;
+            font-family: monospace;
+
+        }
+        .tooltip_key {
+            font-size: 14px;
+            position: relative;
+            font-weight: bold;
+            padding:6px;
+            background-color: rgba(34, 34, 34, 0.8);
+        }
+        .tooltip_value1{
+            font-size: 12px;
+            position: relative;
+            padding:6px;
+            top: 14px;
+            background-color: rgba(34, 34, 34, 0.8);
+        }
+        .tooltip_value2{
+            font-size: 12px;
+            position: relative;
+            padding:6px;
+            top: 28px;
+            background-color: rgba(34, 34, 34, 0.8);
+        }
+        .x-axis {
+        fill: #000;
+        }
+
+
+        .chart {
+        margin: 5px;
+        }
+
+        .chart .category-bar {
+        stroke: white;
+        fill: steelblue;
+        }
+
+        .chart text.name {
+        fill: #000;
+        }
+
+        .chart line {
+        stroke: #c1c1c1;
+        }
+
+        .chart .rule {
+        fill: #000;
+        }
+
+        .main-category-text {
+        fill: #FF4A4A;
+        }
+
+        .main-category-bar {
+        stroke: #FF4A4A;
+        stroke-width: 2px;
+        }
+        .dd {
+            height: 450px;
+            width:100%;
+        }
+
+
+        .line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
+    </style>
+</head>
+
+<body class="bg-grey-lighter font-sans antialiased">
+
+    <div class="bg-indigo-darker text-center p-4 px-6 flex items-center">
+        <div class="hidden lg:block lg:w-1/4 xl:w-1/5 pr-8">
+            <a href="#" class="flex justify-start pl-6">
+                <img src="/static/assets/images/logo.svg" class="" alt="logo">
+            </a>
+        </div>
+        <div class="lg:hidden pr-3" id="mobile-nav-trigger">
+            <div class="toggle p-2 block"><span></span></div>
+        </div>
+        <div class="flex flex-grow items-center lg:w-3/4 xl:w-4/5">
+            <span class="relative w-full">
+                <input type="search" placeholder="Search"
+                    class="w-full text-sm text-white transition border border-transparent focus:outline-none focus:border-indigo placeholder-white rounded bg-indigo-medium py-1 px-2 pl-10 appearance-none leading-normal ds-input">
+                <div class="absolute search-icon" style="top: .5rem; left: .8rem;">
+                    <svg class="fill-current pointer-events-none text-white w-4 h-4" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z">
+                        </path>
+                    </svg>
+                </div>
+            </span>
+            <a href=""
+                class="text-sm text-right text-white py-2 px-3 hover:text-grey-dark no-underline hidden lg:block lg:w-1/3 px-6">Pengaturan</a>
+        </div>
+    </div>
+    <!-- Main -->
+    <div class="flex">
+
+        <!-- Side Nav -->
+        <nav
+            class="absolute lg:relative lg:flex lg:text-sm bg-indigo-darker lg:bg-transparent pin-l pin-r py-4 px-6 lg:pt-10 lg:pl-12 lg:pr-6 -mt-1 lg:mt-0 overflow-y-auto lg:w-1/5 lg:border-r z-40 hidden">
+            <ul class="list-reset mb-8 w-full">
+                <li class="ml-2 mb-4 flex">
+                    <a href="/" class="flex justify-start" style="text-decoration:none;">
+                    <img src="/static/assets/images/home-default.svg" alt="home-icon" class="w-4 h-4 mr-2">
+                    <div
+                        class="hover:cursor-pointer text-white lg:text-indigo-darkest no-underline font-medium mobile-home-trigger">
+                        Home</div>
+                        </a>
+                </li>
+                <li class="ml-2 mb-4 flex">
+                    <a href="/chart" class="flex justify-start" style="text-decoration:none;">
+                        <img src="/static/assets/images/home-default.svg" alt="home-icon" class="w-4 h-4 mr-2">
+                        <div
+                            class="hover:cursor-pointer text-white lg:text-indigo-darkest no-underline font-medium mobile-home-trigger">
+                            Chart</div>
+                    </a>
+                </li>
+                <li class="ml-2 mb-4">
+                    <div class="flex" id="sidenav-categories-trigger">
+
+                        <img src="/static/assets/images/category-default.svg" alt="home-icon" class="w-4 h-4 mr-2">
+                        <div
+                            class="hover:cursor-pointer text-white lg:text-indigo-darkest no-underline font-medium w-full relative">
+                            Categories
+                            <div class="pointer-events-none absolute pin-y pin-r flex items-center px-1 text-grey-darker"
+                                id="sidenav-icon">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="text-grey lg:text-grey-dark list-reset leading-loose mt-2" id="sidenav-categories">
+                        <li class="text-indigo-lighter lg:text-indigo-darker font-medium flex justify-between items-center hover:cursor-pointer transition-normal ml-1 border-l border-grey-dark pl-4 mobile-home-trigger">
+                            <a href="/category/arts" class="flex justify-start" style="text-decoration:none;">
+                            <span>Art & Design</span>
+                            </a>
+                            <span class="bg-indigo-dark text-white text-xs rounded-full px-2 leading-normal">7</span>
+
+                        </li>
+                        <li class="hover:text-indigo-dark hover:cursor-pointer transition-normal ml-1 border-l border-grey-dark pl-4">
+                            <a href="/category/add-data" class="flex justify-start" style="text-decoration:none;">
+                                Add Data
+                            </a>
+                            </li>
+                    </ul>
+                </li>
+                <li class="ml-2 mb-4 flex">
+                    <a href="/about" class="flex justify-start" style="text-decoration:none;">
+                    <img src="/static/assets/images/wishlist-default.svg" alt="wishlist-icon" class="w-4 h-4 mr-2">
+                    <div
+                        class="hover:cursor-pointer text-white lg:text-indigo-darkest no-underline font-medium mobile-home-trigger">
+                        About</div>
+                    </a>
+                </li>
+                <li class="ml-2 mb-4 flex lg:hidden">
+                    <img src="/static/assets/images/profile-default.svg" alt="profile-icon" class="w-4 h-4 mr-2">
+                    <div class="hover:cursor-pointer text-white lg:text-indigo-darkest no-underline font-medium"
+                        id="mobile-profile-trigger">Profile</div>
+                </li>
+            </ul>
+        </nav>
+
+
+
+        <!-- Content -->
+        <div class="flex flex-1 flex-col md:px-6 pt-10" id="content" style="box-shadow:none;margin-bottom:20px;">
+
+
+
+            <div class="px-6 md:px-0 flex justify-between items-center -order-1">
+                <div>
+                    <h2 class="font-normal">Maps</h2>
+                    <p class="text-grey-dark mt-2">Interesting Stats</p>
+                </div>
+
+
+            </div>
+
+
+
+            <div class="px-12 md:px-0 rounded  flex-wrap order-1 md:-order-1" id="section1"
+                style="border: 1px solid #dbd5d5;margin-top: 20px;">
+                <div id="tooltip-container"></div>
+                <div id="maps">
+
+                    <div class="w-full md:w-1/4 px-4 mb-6 md:mb-0" style="position:absolute; right:20px;margin-top:20px;">
+                        <label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-state">
+                            Filter Data :
+                        </label>
+                        <div class="relative">
+                            <select
+                                class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darker py-1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey"
+                                style="background:#d6dce2;">
+                                <option>New Mexico</option>
+                                <option>Missouri</option>
+                                <option>Texas</option>
+                            </select>
+                            <div class="pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darker">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <div class="px-12 md:px-0 mt-4 rounded md:flex flex-wrap  md:shadow-md" id="section2" style="background:white;">
+                <!-- <div class="p-4 rounded md:rounded-r-none bg-white shadow-md md:shadow-none"> -->
+                <div style="padding-top:24px;padding-left: 24px;">
+                    <h4>Your favourite authors in this category</h4>
+                </div>
+                <div id="chrt"></div>
+                <!-- </div> -->
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+    <script src="/static/assets/js/bundle.js" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3-request.v1.min.js"></script>
+    <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+    <script>
+
+// (function(){
+
+    var margin = {top: 50, left:50, right:50, bottom:50},
+        height = 450 - margin.top - margin.bottom
+        width = $('#section1').width() - margin.left - margin.right;
+        // mapWidth = ;
+
+        // console.log(mapWidth)
+
+    var COLOR_COUNTS = 9;
+
+    var SCALE = 0.7;
+
+    function Interpolate(start, end, steps, count) {
+        var s = start,
+            e = end,
+            final = s + (((e - s) / steps) * count);
+        return Math.floor(final);
+    }
+
+    function Color(_r, _g, _b) {
+        var r, g, b;
+        var setColors = function (_r, _g, _b) {
+            r = _r;
+            g = _g;
+            b = _b;
+        };
+
+        setColors(_r, _g, _b);
+        this.getColors = function () {
+            var colors = {
+                r: r,
+                g: g,
+                b: b
+            };
+            return colors;
+        };
+    }
+
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    var config = {
+        color1: "#d1ffa2",
+        color2: "#00cf95",
+        mainCategory: "Lamahu",
+        averageCategory: "overweight_incl_obese_adults_number",
+        stateDataColumn: "state_and_district_of_columbia",
+        valueDataColumn:"obese_adults_number",
+    }
+
+
+    var COLOR_FIRST = config.color1, COLOR_LAST = config.color2;
+
+    var rgb = hexToRgb(COLOR_FIRST);
+
+    var COLOR_START = new Color(rgb.r, rgb.g, rgb.b);
+
+    rgb = hexToRgb(COLOR_LAST);
+    var COLOR_END = new Color(rgb.r, rgb.g, rgb.b);
+
+    var MAP_CATEGORY = config.stateDataColumn;
+    var MAP_VALUE = config.valueDataColumn;
+    var MAIN_CATEGORY = config.mainCategory;
+    var AVG_CATEGORY = config.averageCategory;
+
+    var valueById = d3.map();
+
+    var startColors = COLOR_START.getColors(),
+        endColors = COLOR_END.getColors();
+
+    var colors = [];
+
+    for (var i = 0; i < COLOR_COUNTS; i++) {
+        var r = Interpolate(startColors.r, endColors.r, COLOR_COUNTS, i);
+        var g = Interpolate(startColors.g, endColors.g, COLOR_COUNTS, i);
+        var b = Interpolate(startColors.b, endColors.b, COLOR_COUNTS, i);
+        colors.push(new Color(r, g, b));
+    }
+
+
+    var svg = d3.select("#maps")
+        .append("svg")
+        .attr("class", "dd")
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr('viewBox', '0 0 ' + Math.min(width, height) + ' ' + Math.min(width, height))
+
+
+
+    var color = d3.scaleQuantize([1, 7], d3.schemeBlues[6])
+
+    var mp = svg.append("g");
+
+    var quantize = d3.scaleQuantize()
+        .domain([0, 1.0])
+        .range(d3.range(COLOR_COUNTS).map(function (i) { return i }));
+
+    d3.queue()
+        .defer(d3.json, "http://localhost:8888/static/gtlo2.json")
+        .defer(d3.csv, "http://localhost:8888/static/haha.csv")
+        .await(ready);
+
+
+    var projection = d3.geoMercator()
+            .translate([width / 2, height / 2]);
+
+    var path = d3.geoPath()
+        .projection(projection);
+
+
+
+    const zoom = d3.zoom()
+        .on('zoom', () => {
+            $("#tooltip-container").hide();
+            mp.style('desa-2', `${1.5 / d3.event.transform.k}px`)
+            mp.attr('transform', d3.event.transform) // updated for d3 v4
+        })
+
+    svg.call(zoom);
+
+    function ready(error, results, csv) {
+        if (error) throw error
+
+        var name_id_map = {};
+        var id_name_map = {};
+
+        for (var i = 0; i < csv.length; i++) {
+            name_id_map[csv[i].state_and_district_of_columbia] = csv[i].id;
+            id_name_map[csv[i].id] = csv[i].state_and_district_of_columbia;
+        }
+
+        csv.forEach(function (d) {
+            var id = name_id_map[d[MAP_CATEGORY]];
+            valueById.set(id, +d[MAP_VALUE]);
+        });
+
+        quantize.domain([d3.min(csv, function (d) { return +d[MAP_VALUE] }),
+        d3.max(csv, function (d) { return +d[MAP_VALUE] })]);
+
+        var ss = function(id) {
+            var link;
+            csv.forEach(function (row) {
+                if (row.id == id) {
+                    topush = {
+                        id: row.id,
+                        obese_adults: row.obese_adults,
+                        obese_adults_number: row.obese_adults_number,
+                        obese_children_and_adolescents: row.obese_children_and_adolescents
+                    }
+                    link = topush;
+                }
+
+            });
+            return link;
+        }
+
+        var datas = topojson.feature(results, results.objects.gtlo).features
+
+        var topology = topojson.feature(results, results.objects.gtlo)
+
+        var bounds = d3.geoBounds(topology),
+            center = d3.geoCentroid(topology);
+        var distance = d3.geoDistance(bounds[0], bounds[1]),
+            scale = height / distance / Math.sqrt(2);
+
+        projection.scale(scale).center(center);
+
+        mp.selectAll("path")
+            .data(datas)
+            .enter()
+            .append("path")
+            .attr("class", "desa-2")
+            .style("fill", function (d) {
+                if (valueById.get(d.properties.id)) {
+                    var i = quantize(valueById.get(d.properties.id));
+                    var color = colors[i].getColors();
+                    return "rgb(" + color.r + "," + color.g +
+                        "," + color.b + ")";
+                } else {
+                    return "";
+                }
+            })
+            .attr("d", path)
+            .on("mousemove", function (d) {
+                var html = "";
+                html += "<div class=\"tooltip_kv\">";
+                html += "<span class=\"tooltip_key\">";
+                html += "Desa " + id_name_map[d.properties.id];
+                html += "</span>";
+                html += "<br>";
+                html += "<span class=\"tooltip_value1\">";
+                html += "Obese Adults Number <b>" + ss(d.properties.id).obese_adults_number+"</b>";
+                html += "</span>";
+                html += "<br>";
+                html += "<span class=\"tooltip_value2\">";
+                html += "Obese Adults <b>"+ss(d.properties.id).obese_adults+"</b>";
+                html += "</span>";
+                html += "</div>";
+
+                $("#tooltip-container").html(html);
+                $("#tooltip-container").show();
+                $(this).attr("fill-opacity", "0.8");
+                var coordinates = d3.mouse(this);
+
+                var map_width = $('.desa-2')[0].getBoundingClientRect().width;
+
+                if (d3.event.layerX < map_width / 2) {
+                    d3.select("#tooltip-container")
+                        .style("top", (d3.event.layerY + 15) + "px")
+                        .style("left", (d3.event.layerX - 15) + "px");
+                } else {
+                    var tooltip_width = $("#tooltip-container").width();
+                    d3.select("#tooltip-container")
+                        .style("top", (d3.event.layerY + 15) + "px")
+                        .style("left", (d3.event.layerX + 15) + "px");
+                }
+            })
+            .on("mouseout", function () {
+                $("#tooltip-container").hide();
+                $(this).attr("fill-opacity", "1.0");
+            });
+
+        var gap = 2;
+        var names = [];
+        var ids = [];
+        var name_values = [];
+        var values = [];
+        var chart;
+        var width2 = width - (margin.left + margin.right +50);
+        var bar_height = 20;
+        var height2 = (bar_height + 2 * gap) * names.length;
+
+        var total_categories = 0, categories_count = 0;
+        Object.keys(name_id_map).forEach(function (n) {
+            if (valueById.get(+name_id_map[n])) {
+                ids.push(+name_id_map[n]);
+                values.push(valueById.get(+name_id_map[n]));
+                name_values.push({ name: n, value: valueById.get(+name_id_map[n]) });
+                total_categories += valueById.get(+name_id_map[n]);
+                categories_count++;
+            }
+        });
+
+        values.push(Math.round(total_categories / categories_count));
+        // name_values.push({ name: AVG_CATEGORY, value: Math.round(total_categories / categories_count) });
+
+        values = values.sort(function (a, b) {
+            return -(a - b);
+        });
+
+        name_values = name_values.sort(function (a, b) {
+            return -(a.value - b.value);
+        });
+
+
+        name_values.forEach(function (d) {
+            names.push(d.name);
+        });
+
+
+        var left_width = 150;
+
+        var x = d3.scaleLinear()
+            .domain([0, d3.max(values)])
+            .range([0, width2]);
+
+        var xAxis = d3.axisTop()
+            .scale(x)
+
+
+        var y = d3.scaleBand()
+            .domain(names)
+            .rangeRound([0, (bar_height + 2 * gap) * names.length])
+
+        chart = d3.select("#chrt")
+            .append('svg')
+            .attr('class', 'chart')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', (bar_height + gap * 2) * names.length + 60)
+            .append("g")
+            .attr("transform", "translate(10, 40)");
+
+        chart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(" + left_width + ", 0)")
+            .call(xAxis)
+            .append("text")
+            .attr("transform", "rotate(0) translate(" + (width2) + ", " + (0) + ")")
+            .attr("y", -30)
+            .attr("dy", "0em")
+            .style("text-anchor", "end")
+            .text(MAP_VALUE);
+
+        chart.selectAll(".tick").append("line")
+            .attr("x1", 0)
+            .attr("x2", 0)
+            .attr("y1", 0)
+            .attr("y2", (bar_height + gap * 2) * names.length);
+
+        chart.selectAll("rect")
+            .data(name_values)
+            .enter().append("rect")
+            .attr("x", left_width)
+            .attr("y", function (d) {
+                return y(d.name) + gap;
+            })
+            .attr("name", function (d, i) {
+                return d.name;
+            })
+            .attr("width", function (d, i) {
+                return x(d.value);
+            })
+            .attr("height", bar_height)
+            .style("fill", function (d) {
+                var i = quantize(d.value);
+                var color = colors[i].getColors();
+                return "rgb(" + color.r + "," + color.g +
+                    "," + color.b + ")";
+            })
+            // .attr("class", function (d) {
+            //     if (d.name === MAIN_CATEGORY || d.name === AVG_CATEGORY) {
+            //         return "main-category-bar";
+            //     } else {
+            //         return "category-bar";
+            //     }
+            // });
+
+        chart.selectAll("text .score")
+            .data(name_values)
+            .enter().append("text")
+            .attr("x", function (d) {
+                return x(d.value) + left_width; }
+            )
+            .attr("y", function (d, i) {
+                return y(d.name) + y.bandwidth() / 2;
+            })
+            .attr("dx", 5)
+            .attr("dy", ".36em")
+            .attr("text-anchor", "left")
+            .attr('class', 'score')
+            .text(function (d) {
+                return d.value;
+            });
+
+        chart.selectAll("text .name")
+            .data(name_values)
+            .enter().append("text")
+            .attr("x", left_width / 2)
+            .attr("y", function (d, i) {
+                return y(d.name) + y.bandwidth() / 2;
+            })
+            .attr("dy", ".36em")
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+                return d.name;
+            });
+
+
+
+    }
+
+
+// })()
+
+    </script>
+
+</body>
+
+</html>
